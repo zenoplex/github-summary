@@ -1,31 +1,77 @@
-# Websocket-Rails-Node
+# GithubSummary
 
 [![wercker status](https://app.wercker.com/status/600638ff8906a97fbd7eb3e8d29cdbc4/s "wercker status")](https://app.wercker.com/project/bykey/600638ff8906a97fbd7eb3e8d29cdbc4)
 
-Unofficial JavaSript implemention of the [Websocket-Rails](https://github.com/websocket-rails/websocket-rails) JavaScript client.
+Node version of [github-nippou](https://github.com/masutaka/github-nippou) gem.
 
-## WARNING: use at your own risk!
-
-Code is based from official 0.7.0 release.
-All scripts are ported into ES6.
-Tests are not optimized and is (almost) kept as it is in the official release.
+This package will retrieve unique github issue and pull request activities for a given date range.
 
 ## Getting Started
 
 ```bash
-npm i webpack-rails-node -S
+npm i github-summary -g
 ```
 
 ## Usage
 
-Usage should be same as the official release of 0.7.0.
-see [offiial doc](https://github.com/websocket-rails/websocket-rails/wiki/Using-the-JavaScript-Client) for detail.
+Retrieve given `username`s' events for public repositories
 
 ```js
-var WebSocketRails = require('websocket-rails-node');
-var dispatcher = new WebSocketRails('localhost:3000/websocket');
-
-dispatcher.bind('client_connected', data => {
-  console.log('client connected', data);
+var GithubSummary = require('github-summary');
+var summary = new GithubSummary({
+  username: 'github username'
 });
+summary.getSummary()
+  .then(function(markdown) {
+    console.log(markdown);
+  });
+```
+
+Retrieve given `username`s' events for public/private repositories
+
+```js
+// use username and password
+var GithubSummary = require('github-summary');
+var summary = new GithubSummary({
+  username: 'github username',
+  password: 'some_login_password'
+});
+
+// or Token if you like
+var summary = new GithubSummary({
+  username: 'github username',
+  token: 'some_access_token',
+});
+```
+## Instance methods
+
+* getSummary()
+
+## Options
+
+**GithubSummary(options)**
+
+```js
+{
+  // username is required
+  username:        'github username',
+  // either password or token is required to access events in private repositories
+  password:        'some_login_password',
+  token:           'some_access_token',
+
+  // set starting date. Defaults to yesturday (`date.setDate(-1)`)
+  from:            '2015/12/12',
+
+  // set end date. Defaults to today
+  to:              '2015/12/24',
+
+  // number of events to retrieve per request to github. Default maxed to `100`
+  perPage:         100,
+
+  // setting true will reteive all possible user event pages. Default: `false`
+  requestAllPages: false,
+
+  // setting false will return html instead of github favored markdown. Default: `true`
+  markdown:        true,
+}
 ```

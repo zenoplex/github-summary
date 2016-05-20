@@ -1,5 +1,10 @@
 {
   "presets": ["es2015"],
+  "env": {
+    "test": {
+      "presets": ["power-assert"]
+    }
+  },
   "plugins": [
     "transform-runtime",
     "transform-object-rest-spread"

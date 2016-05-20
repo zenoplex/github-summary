@@ -3,7 +3,6 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import { default as config } from '../webpack.config.babel';
-import path from 'path';
 
 const app = express();
 const compiler = webpack(config);
