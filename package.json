@@ -18,7 +18,7 @@
     "build:prod": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "build:lib": "babel src -d lib",
     "build": "npm run build:lib && npm run build:prod",
-    "start": "babel-node server/index.js",
+    "start": "node server/index.js",
     "lint": "eslint src",
     "mocha": "NODE_ENV=test mocha --compilers js:babel-register test/*_spec.js",
     "test": "npm run lint && npm run mocha",
