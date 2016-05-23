@@ -157,7 +157,7 @@ export default class GithubSummary {
 
 const yesturday = (() => {
   const date = new Date();
-  date.setDate(-1);
+  date.setDate(date.getDate() - 1);
   return dateFormat(date, 'yyyy/mm/dd');
 })();
 
