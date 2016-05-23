@@ -1,7 +1,7 @@
-import path from 'path';
-import webpack from 'webpack';
+const path = require('path');
+const webpack = require('webpack');
 
-export default {
+module.exports = {
   entry:   [
     './src/index',
   ],
@@ -12,7 +12,6 @@ export default {
     library: 'GithubSummary',
   },
   plugins: [
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ja|en/),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
@@ -48,7 +47,6 @@ export default {
     ],
   },
   resolve: {
-    root:       [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'node_modules')],
     extensions: ['', '.js'],
   },
 };

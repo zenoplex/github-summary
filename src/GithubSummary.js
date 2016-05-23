@@ -8,7 +8,7 @@ import { Buffer } from 'buffer/';
 import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
   CLOSED,
-} from 'constants';
+} from './constants';
 
 const mergedTag = '<strong>merged</strong>';
 const closedTag = '<strong>closed</strong>';
@@ -157,7 +157,7 @@ export default class GithubSummary {
 
 const yesturday = (() => {
   const date = new Date();
-  date.setDate(-1);
+  date.setDate(date.getDate() - 1);
   return dateFormat(date, 'yyyy/mm/dd');
 })();
 

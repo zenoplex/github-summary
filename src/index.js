@@ -1,3 +1,3 @@
 import GithubSummary from './GithubSummary';
 
-export { GithubSummary };
+module.exports = GithubSummary;
