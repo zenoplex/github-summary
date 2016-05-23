@@ -8,7 +8,7 @@ import { Buffer } from 'buffer/';
 import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
   CLOSED,
-} from 'constants';
+} from './constants';
 
 const mergedTag = '<strong>merged</strong>';
 const closedTag = '<strong>closed</strong>';

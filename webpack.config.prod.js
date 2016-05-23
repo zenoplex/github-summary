@@ -12,7 +12,6 @@ module.exports = {
     library: 'GithubSummary',
   },
   plugins: [
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ja|en/),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
@@ -48,7 +47,6 @@ module.exports = {
     ],
   },
   resolve: {
-    root:       [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'node_modules')],
     extensions: ['', '.js'],
   },
 };
