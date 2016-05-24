@@ -73,5 +73,14 @@ var summary = new GithubSummary({
 
   // setting false will return html instead of github favored markdown. Default: `true`
   markdown:        true,
+
+  // fomatter string for output
+  formatter:       '{checkbox} {title} - {repo} by {username} {flag}',
+
+  // tag for merged issue or pull request
+  mergedTag:       '<strong>merged</strong>',
+
+  // tag for closed issue or pull request
+  closedTag:       '<strong>closed</strong>',
 }
 ```
