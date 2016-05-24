@@ -9,9 +9,6 @@ import {
   CLOSED,
 } from './constants';
 
-const mergedTag = '<strong>merged</strong>';
-const closedTag = '<strong>closed</strong>';
-
 export default class GithubSummary {
   constructor(options) {
     this.options = { ...GithubSummary.defaults, ...options };
@@ -85,6 +82,7 @@ export default class GithubSummary {
   }
 
   formatFlag(payload) {
+    const { mergedTag, closedTag } = this.options;
     const { merged, state } = payload;
 
     if (merged) return mergedTag;
@@ -100,12 +98,23 @@ export default class GithubSummary {
   }
 
   format(repo, payload) {
+    const { options } = this;
     const { user } = payload;
-    return `${this.formatCheckbox(payload)}
-    ${this.formatIssueTitle(payload)}
-     - ${this.formatRepo(repo)}
-     by ${this.formatUser(user)}
-     ${this.formatFlag(payload)}`;
+    const regExp = /{(username|repo|title|checkbox|flag)}/g;
+    const templates = {
+      '{repo}':     this.formatRepo(repo),
+      '{username}': this.formatUser(user),
+      '{title}':    this.formatIssueTitle(payload),
+      '{checkbox}': this.formatCheckbox(payload),
+      '{flag}':     this.formatFlag(payload),
+    };
+
+    return options.formatter.replace(regExp, (match) => {
+      if (match in templates) {
+        return templates[match];
+      }
+      return null;
+    });
   }
 
   formatEvent(event) {
@@ -175,4 +184,7 @@ GithubSummary.defaults = {
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
+  formatter:       '{checkbox} {title} - {repo} by {username} {flag}',
+  mergedTag:       '<strong>merged</strong>',
+  closedTag:       '<strong>closed</strong>',
 };
