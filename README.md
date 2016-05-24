@@ -1,6 +1,6 @@
 # GithubSummary
 
-[![wercker status](https://app.wercker.com/status/600638ff8906a97fbd7eb3e8d29cdbc4/s "wercker status")](https://app.wercker.com/project/bykey/600638ff8906a97fbd7eb3e8d29cdbc4)
+[![wercker status](https://app.wercker.com/status/017b217a3bc138623299b2761965519d/s "wercker status")](https://app.wercker.com/project/bykey/017b217a3bc138623299b2761965519d)
 
 Node version of [github-nippou](https://github.com/masutaka/github-nippou) gem.
 
