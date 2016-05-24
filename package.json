@@ -63,7 +63,6 @@
   "dependencies": {
     "axios": "^0.11.0",
     "buffer": "^4.6.0",
-    "dateformat": "^1.0.12",
     "lodash": "^4.12.0",
     "parse-link-header": "^0.4.1",
     "to-markdown": "^3.0.0"
