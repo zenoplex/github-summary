@@ -3,7 +3,6 @@ import uniqBy from 'lodash/uniqBy';
 import axios from 'axios';
 import parseLinkHeader from 'parse-link-header';
 import toMarkdown from 'to-markdown';
-import dateFormat from 'dateformat';
 import { Buffer } from 'buffer/';
 import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
@@ -137,7 +136,6 @@ export default class GithubSummary {
             const time = Date.parse(event.created_at);
             return (new Date(from).getTime() < time && new Date(to).getTime() > time);
           });
-
         // filter by unique html_url
         const unique = uniqBy(filtered, (item) => {
           const { pull_request, issue } = item.payload;
@@ -158,7 +156,14 @@ export default class GithubSummary {
 const yesturday = (() => {
   const date = new Date();
   date.setDate(date.getDate() - 1);
-  return dateFormat(date, 'yyyy/mm/dd');
+  date.setHours(0, 0, 0, 0);
+  return date;
+})();
+
+const today = (() => {
+  const date = new Date();
+  date.setHours(23, 59, 59, 999);
+  return date;
 })();
 
 GithubSummary.defaults = {
@@ -166,7 +171,7 @@ GithubSummary.defaults = {
   password:        null,
   token:           null,
   from:            yesturday,
-  to:              dateFormat(new Date(), 'yyyy/mm/dd'),
+  to:              today,
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
