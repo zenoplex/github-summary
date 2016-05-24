@@ -9,9 +9,6 @@ import {
   CLOSED,
 } from './constants';
 
-const mergedTag = '<strong>merged</strong>';
-const closedTag = '<strong>closed</strong>';
-
 export default class GithubSummary {
   constructor(options) {
     this.options = { ...GithubSummary.defaults, ...options };
@@ -85,6 +82,7 @@ export default class GithubSummary {
   }
 
   formatFlag(payload) {
+    const { mergedTag, closedTag } = this.options;
     const { merged, state } = payload;
 
     if (merged) return mergedTag;
@@ -187,4 +185,6 @@ GithubSummary.defaults = {
   requestAllPages: false,
   markdown:        true,
   formatter:       '{checkbox} {title} - {repo} by {username} {flag}',
+  mergedTag:       '<strong>merged</strong>',
+  closedTag:       '<strong>closed</strong>',
 };

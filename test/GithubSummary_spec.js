@@ -12,6 +12,7 @@ describe('GithubSummary', () => {
     const {
       options: {
         username, password, token, from, to, perPage, requestAllPages, markdown, formatter,
+        mergedTag, closedTag,
       },
     } = summary;
 
@@ -30,5 +31,7 @@ describe('GithubSummary', () => {
     assert(requestAllPages === false);
     assert(markdown);
     assert(formatter === '{checkbox} {title} - {repo} by {username} {flag}');
+    assert(mergedTag === '<strong>merged</strong>');
+    assert(closedTag === '<strong>closed</strong>');
   });
 });
