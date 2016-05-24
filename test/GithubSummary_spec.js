@@ -1,5 +1,6 @@
 import assert from 'power-assert';
 import GithubSummary from '../src/GithubSummary';
+import event from './json/pullRequestEvent.json';
 
 describe('GithubSummary', () => {
   let summary;
@@ -33,5 +34,50 @@ describe('GithubSummary', () => {
     assert(formatter === '{checkbox} {title} - {repo} by {username} {flag}');
     assert(mergedTag === '<strong>merged</strong>');
     assert(closedTag === '<strong>closed</strong>');
+  });
+
+  it('should return authorization header with password', () => {
+    summary = new GithubSummary({ username: 'zenoplex', password: 'github_login_password' });
+    assert(summary.getAuth() === 'Basic emVub3BsZXg6Z2l0aHViX2xvZ2luX3Bhc3N3b3Jk');
+  });
+
+  it('should return authorizaiton header with token', () => {
+    summary = new GithubSummary({ username: 'zenoplex', token: 'github_auth_token' });
+    assert(summary.getAuth() === 'token github_auth_token');
+  });
+
+  it('should format repo', () => {
+    const { repo } = event;
+    assert(summary.formatRepo(repo) === 'octocat/Hello-World');
+  });
+
+  it('should format username', () => {
+    const { payload: { pull_request: { user } } } = event;
+    assert(summary.formatUser(user) === '<a href="https://github.com/baxterthehacker">baxterthehacker</a>');
+  });
+
+  it('should format issue title', () => {
+    const { payload: { pull_request } } = event;
+    assert(summary.formatIssueTitle(pull_request) === '<a href="https://github.com/baxterthehacker/public-repo/pull/1">Update the README with new information</a>');
+  });
+
+  it('should output flag', () => {
+    const { payload: { pull_request } } = event;
+
+    assert(summary.formatFlag(pull_request) === '');
+    assert(summary.formatFlag({ merged: true }) === '<strong>merged</strong>');
+    assert(summary.formatFlag({ state: 'closed' }) === '<strong>closed</strong>');
+  });
+
+  it('should output checkbox', () => {
+    const { payload: { pull_request } } = event;
+
+    assert(summary.formatCheckbox(pull_request) === '<input type="checkbox" />');
+    assert(summary.formatCheckbox({ merged: true }) === '<input type="checkbox" checked />');
+    assert(summary.formatCheckbox({ state: 'closed' }) === '<input type="checkbox" checked />');
+  });
+
+  it('should format event', () => {
+    assert(summary.formatEvent(event) === '<input type="checkbox" /> <a href="https://github.com/baxterthehacker/public-repo/pull/1">Update the README with new information</a> - octocat/Hello-World by <a href="https://github.com/baxterthehacker">baxterthehacker</a>');
   });
 });
