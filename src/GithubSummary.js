@@ -67,8 +67,8 @@ export default class GithubSummary {
   }
 
   formatRepo(repo) {
-    const { name, url } = repo;
-    return `<a href="${url}">${name}</a>`;
+    const { name } = repo;
+    return name;
   }
 
   formatIssueTitle(payload) {
@@ -114,7 +114,7 @@ export default class GithubSummary {
         return templates[match];
       }
       return null;
-    });
+    }).trim();
   }
 
   formatEvent(event) {
