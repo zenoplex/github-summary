@@ -100,12 +100,23 @@ export default class GithubSummary {
   }
 
   format(repo, payload) {
+    const { options } = this;
     const { user } = payload;
-    return `${this.formatCheckbox(payload)}
-    ${this.formatIssueTitle(payload)}
-     - ${this.formatRepo(repo)}
-     by ${this.formatUser(user)}
-     ${this.formatFlag(payload)}`;
+    const regExp = /{(username|repo|title|checkbox|flag)}/g;
+    const templates = {
+      '{repo}':     this.formatRepo(repo),
+      '{username}': this.formatUser(user),
+      '{title}':    this.formatIssueTitle(payload),
+      '{checkbox}': this.formatCheckbox(payload),
+      '{flag}':     this.formatFlag(payload),
+    };
+
+    return options.formatter.replace(regExp, (match) => {
+      if (match in templates) {
+        return templates[match];
+      }
+      return null;
+    });
   }
 
   formatEvent(event) {
@@ -175,4 +186,5 @@ GithubSummary.defaults = {
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
+  formatter:       '{checkbox} {title} - {repo} by {username} {flag}',
 };

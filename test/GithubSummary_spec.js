@@ -11,7 +11,7 @@ describe('GithubSummary', () => {
   it('should return default options', () => {
     const {
       options: {
-        username, password, token, from, to, perPage, requestAllPages, markdown,
+        username, password, token, from, to, perPage, requestAllPages, markdown, formatter,
       },
     } = summary;
 
@@ -29,5 +29,6 @@ describe('GithubSummary', () => {
     assert(perPage === 100);
     assert(requestAllPages === false);
     assert(markdown);
+    assert(formatter === '{checkbox} {title} - {repo} by {username} {flag}');
   });
 });
