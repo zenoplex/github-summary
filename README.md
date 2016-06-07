@@ -75,7 +75,7 @@ var summary = new GithubSummary({
   markdown:        true,
 
   // fomatter string for output
-  formatter:       '{checkbox} {title} - {repo} by {username} {flag}',
+  formatter:       '{checkbox} {flag} {title} {repo} {username} {avatar}',
 
   // tag for merged issue or pull request
   mergedTag:       '<strong>merged</strong>',
