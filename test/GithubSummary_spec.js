@@ -31,7 +31,7 @@ describe('GithubSummary', () => {
     assert(perPage === 100);
     assert(requestAllPages === false);
     assert(markdown);
-    assert(formatter === '{checkbox} {title} - {repo} by {username} {flag}');
+    assert(formatter === '{checkbox} {avatar} <strong>{title}</strong> - {repo}');
     assert(mergedTag === '<strong>merged</strong>');
     assert(closedTag === '<strong>closed</strong>');
   });
@@ -77,7 +77,12 @@ describe('GithubSummary', () => {
     assert(summary.formatCheckbox({ state: 'closed' }) === '<input type="checkbox" checked />');
   });
 
+  it('should format user avatar', () => {
+    const { payload: { pull_request: { user } } } = event;
+    assert(summary.formatUserAvatar(user) === '<img src="https://avatars.githubusercontent.com/u/6752317?v=3&s=18" alt="baxterthehacker" />');
+  });
+
   it('should format event', () => {
-    assert(summary.formatEvent(event) === '<input type="checkbox" /> <a href="https://github.com/baxterthehacker/public-repo/pull/1">Update the README with new information</a> - octocat/Hello-World by <a href="https://github.com/baxterthehacker">baxterthehacker</a>');
+    assert(summary.formatEvent(event) === '<input type="checkbox" /> <img src="https://avatars.githubusercontent.com/u/6752317?v=3&s=18" alt="baxterthehacker" /> <strong><a href="https://github.com/baxterthehacker/public-repo/pull/1">Update the README with new information</a></strong> - octocat/Hello-World');
   });
 });
