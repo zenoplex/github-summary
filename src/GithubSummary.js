@@ -82,8 +82,8 @@ export default class GithubSummary {
   }
 
   formatUserAvatar(user) {
-    const { avatar_url } = user;
-    return `<img src="${avatar_url}&s=18" />`;
+    const { avatar_url, login } = user;
+    return `<img src="${avatar_url}&s=18" alt="${login}" />`;
   }
 
   formatFlag(payload) {
