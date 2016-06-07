@@ -81,6 +81,11 @@ export default class GithubSummary {
     return `<a href="${html_url}">${login}</a>`;
   }
 
+  formatUserAvatar(user) {
+    const { avatar_url } = user;
+    return `<img src="${avatar_url}&s=18" />`;
+  }
+
   formatFlag(payload) {
     const { mergedTag, closedTag } = this.options;
     const { merged, state } = payload;
@@ -100,13 +105,14 @@ export default class GithubSummary {
   format(repo, payload) {
     const { options } = this;
     const { user } = payload;
-    const regExp = /{(username|repo|title|checkbox|flag)}/g;
+    const regExp = /{(username|repo|title|checkbox|flag|avatar)}/g;
     const templates = {
       '{repo}':     this.formatRepo(repo),
       '{username}': this.formatUser(user),
       '{title}':    this.formatIssueTitle(payload),
       '{checkbox}': this.formatCheckbox(payload),
       '{flag}':     this.formatFlag(payload),
+      '{avatar}':   this.formatUserAvatar(user),
     };
 
     return options.formatter.replace(regExp, (match) => {

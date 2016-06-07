@@ -77,6 +77,11 @@ describe('GithubSummary', () => {
     assert(summary.formatCheckbox({ state: 'closed' }) === '<input type="checkbox" checked />');
   });
 
+  it('should format user avatar', () => {
+    const { payload: { pull_request: { user } } } = event;
+    assert(summary.formatUserAvatar(user) === '<img src="https://avatars.githubusercontent.com/u/6752317?v=3&s=18" />');
+  });
+
   it('should format event', () => {
     assert(summary.formatEvent(event) === '<input type="checkbox" /> <a href="https://github.com/baxterthehacker/public-repo/pull/1">Update the README with new information</a> - octocat/Hello-World by <a href="https://github.com/baxterthehacker">baxterthehacker</a>');
   });
