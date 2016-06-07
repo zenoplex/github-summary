@@ -190,7 +190,7 @@ GithubSummary.defaults = {
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
-  formatter:       '{checkbox} {title} - {repo} by {username} {flag}',
+  formatter:       '{checkbox} {avatar} <strong>{title}</strong> - {repo} {flag}',
   mergedTag:       '<strong>merged</strong>',
   closedTag:       '<strong>closed</strong>',
 };
