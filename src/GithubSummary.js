@@ -5,6 +5,7 @@ import axios from 'axios';
 import parseLinkHeader from 'parse-link-header';
 import toMarkdown from 'to-markdown';
 import { Buffer } from 'buffer/';
+import { getStartOfDay, getEndOfDay } from './utils/date';
 import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
   CLOSED,
@@ -177,14 +178,7 @@ export default class GithubSummary {
 const yesturday = (() => {
   const date = new Date();
   date.setDate(date.getDate() - 1);
-  date.setHours(0, 0, 0, 0);
-  return date;
-})();
-
-const today = (() => {
-  const date = new Date();
-  date.setHours(23, 59, 59, 999);
-  return date;
+  return getEndOfDay(date);
 })();
 
 GithubSummary.defaults = {
@@ -192,7 +186,7 @@ GithubSummary.defaults = {
   password:        null,
   token:           null,
   from:            yesturday,
-  to:              today,
+  to:              getStartOfDay(),
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
