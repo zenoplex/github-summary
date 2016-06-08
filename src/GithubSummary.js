@@ -141,7 +141,7 @@ export default class GithubSummary {
   getSummary() {
     return this.requestEvents()
       .then(events => {
-        let html = '';
+        const html = [];
         const { markdown } = this.options;
         const filtered = events
           .filter(event =>
@@ -167,10 +167,11 @@ export default class GithubSummary {
         Object.keys(grouped).forEach(key => {
           const heading = `<h3>${key}</h3>`;
           const formatted = grouped[key].map(event => `<li>${this.formatEvent(event)}</li>`);
-          html += `${heading}<ul>${formatted}</ul>`;
+          html.push(`${heading}<ul>${formatted}</ul>`);
         });
 
-        return markdown ? toMarkdown(html, { gfm: true }) : html;
+        const output = html.join('');
+        return markdown ? toMarkdown(output, { gfm: true }) : output;
       });
   }
 }
