@@ -152,7 +152,7 @@ export default class GithubSummary {
           .filter(event => {
             const { from, to } = this.options;
             const time = Date.parse(event.created_at);
-            return (new Date(from).getTime() < time && new Date(to).getTime() > time);
+            return (getStartOfDay(from).getTime() < time && getEndOfDay(to).getTime() > time);
           });
         // filter by unique html_url
         const unique = uniqBy(filtered, (item) => {
@@ -178,7 +178,7 @@ export default class GithubSummary {
 const yesturday = (() => {
   const date = new Date();
   date.setDate(date.getDate() - 1);
-  return getEndOfDay(date);
+  return getStartOfDay(date);
 })();
 
 GithubSummary.defaults = {
@@ -186,7 +186,7 @@ GithubSummary.defaults = {
   password:        null,
   token:           null,
   from:            yesturday,
-  to:              getStartOfDay(),
+  to:              getEndOfDay(),
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
