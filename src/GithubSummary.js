@@ -166,7 +166,6 @@ export default class GithubSummary {
         Object.keys(grouped).forEach(key => {
           const heading = `<h3>${key}</h3>`;
           const formatted = grouped[key].map(event => `<li>${this.formatEvent(event)}</li>`);
-          console.log(formatted);
           html += `${heading}<ul>${formatted}</ul>`;
         });
 
@@ -197,7 +196,7 @@ GithubSummary.defaults = {
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
-  formatter:       '{checkbox} {avatar} <strong>{title}</strong> - {repo}',
+  formatter:       '{checkbox} {avatar} <strong>{title}</strong>',
   mergedTag:       '<strong>merged</strong>',
   closedTag:       '<strong>closed</strong>',
 };
