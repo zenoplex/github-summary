@@ -5,6 +5,7 @@ import axios from 'axios';
 import parseLinkHeader from 'parse-link-header';
 import toMarkdown from 'to-markdown';
 import { Buffer } from 'buffer/';
+import { getStartOfDay, getEndOfDay } from './utils/date';
 import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
   CLOSED,
@@ -140,7 +141,7 @@ export default class GithubSummary {
   getSummary() {
     return this.requestEvents()
       .then(events => {
-        let html = '';
+        const html = [];
         const { markdown } = this.options;
         const filtered = events
           .filter(event =>
@@ -151,7 +152,7 @@ export default class GithubSummary {
           .filter(event => {
             const { from, to } = this.options;
             const time = Date.parse(event.created_at);
-            return (new Date(from).getTime() < time && new Date(to).getTime() > time);
+            return (getStartOfDay(from).getTime() < time && getEndOfDay(to).getTime() > time);
           });
         // filter by unique html_url
         const unique = uniqBy(filtered, (item) => {
@@ -166,10 +167,11 @@ export default class GithubSummary {
         Object.keys(grouped).forEach(key => {
           const heading = `<h3>${key}</h3>`;
           const formatted = grouped[key].map(event => `<li>${this.formatEvent(event)}</li>`);
-          html += `${heading}<ul>${formatted}</ul>`;
+          html.push(`${heading}<ul>${formatted}</ul>`);
         });
 
-        return markdown ? toMarkdown(html, { gfm: true }) : html;
+        const output = html.join('');
+        return markdown ? toMarkdown(output, { gfm: true }) : output;
       });
   }
 }
@@ -177,14 +179,7 @@ export default class GithubSummary {
 const yesturday = (() => {
   const date = new Date();
   date.setDate(date.getDate() - 1);
-  date.setHours(0, 0, 0, 0);
-  return date;
-})();
-
-const today = (() => {
-  const date = new Date();
-  date.setHours(23, 59, 59, 999);
-  return date;
+  return getStartOfDay(date);
 })();
 
 GithubSummary.defaults = {
@@ -192,7 +187,7 @@ GithubSummary.defaults = {
   password:        null,
   token:           null,
   from:            yesturday,
-  to:              today,
+  to:              getEndOfDay(),
   perPage:         100,
   requestAllPages: false,
   markdown:        true,
