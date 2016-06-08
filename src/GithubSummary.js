@@ -1,5 +1,6 @@
 import drop from 'lodash/drop';
 import uniqBy from 'lodash/uniqBy';
+import groupBy from 'lodash/groupBy';
 import axios from 'axios';
 import parseLinkHeader from 'parse-link-header';
 import toMarkdown from 'to-markdown';
@@ -139,6 +140,7 @@ export default class GithubSummary {
   getSummary() {
     return this.requestEvents()
       .then(events => {
+        let html = '';
         const { markdown } = this.options;
         const filtered = events
           .filter(event =>
@@ -159,11 +161,16 @@ export default class GithubSummary {
 
           return null;
         });
+        // group by repo name
+        const grouped = groupBy(unique, 'repo.name');
+        Object.keys(grouped).forEach(key => {
+          const heading = `<h3>${key}</h3>`;
+          const formatted = grouped[key].map(event => `<li>${this.formatEvent(event)}</li>`);
+          console.log(formatted);
+          html += `${heading}<ul>${formatted}</ul>`;
+        });
 
-        const formatted = unique.map(event => `<li>${this.formatEvent(event)}</li>`);
-        const list = `<ul>${formatted}</ul>`;
-
-        return markdown ? toMarkdown(list, { gfm: true }) : list;
+        return markdown ? toMarkdown(html, { gfm: true }) : html;
       });
   }
 }
