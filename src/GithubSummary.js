@@ -176,17 +176,11 @@ export default class GithubSummary {
   }
 }
 
-const yesturday = (() => {
-  const date = new Date();
-  date.setDate(date.getDate() - 1);
-  return getStartOfDay(date);
-})();
-
 GithubSummary.defaults = {
   username:        null,
   password:        null,
   token:           null,
-  from:            yesturday,
+  from:            getStartOfDay(),
   to:              getEndOfDay(),
   perPage:         100,
   requestAllPages: false,
