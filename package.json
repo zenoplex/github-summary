@@ -19,7 +19,7 @@
     "build:lib": "babel src -d lib",
     "build": "npm run build:lib && npm run build:prod",
     "start": "node server/index.js",
-    "lint": "eslint src test",
+    "lint": "eslint .",
     "mocha": "NODE_ENV=test mocha --compilers js:babel-register --recursive 'test/**/*_spec.js'",
     "test": "npm run lint && npm run mocha",
     "test:watch": "npm run mocha -- -w",
