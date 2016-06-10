@@ -17,17 +17,16 @@ describe('GithubSummary', () => {
       },
     } = summary;
 
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
-    const yesturday = new Date();
-    yesturday.setDate(yesturday.getDate() - 1);
-    yesturday.setHours(0, 0, 0, 0);
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
 
     assert(username === 'zenoplex');
     assert(password === null);
     assert(token === null);
-    assert.deepEqual(from, yesturday);
-    assert.deepEqual(to, today);
+    assert.deepEqual(from, start);
+    assert.deepEqual(to, end);
     assert(perPage === 100);
     assert(requestAllPages === false);
     assert(markdown);
