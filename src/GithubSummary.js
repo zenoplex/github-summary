@@ -11,6 +11,18 @@ import {
 } from './constants';
 
 export default class GithubSummary {
+
+  static defaults = {
+    from: getStartOfDay(),
+    to: getEndOfDay(),
+    perPage: 100,
+    requestAllPages: false,
+    markdown: true,
+    formatter: '{checkbox} {avatar} <strong>{title}</strong>',
+    mergedTag: '<strong>merged</strong>',
+    closedTag: '<strong>closed</strong>',
+  };
+  
   constructor(options) {
     this.options = { ...GithubSummary.defaults, ...options };
 
@@ -174,17 +186,3 @@ export default class GithubSummary {
       });
   }
 }
-
-GithubSummary.defaults = {
-  username:        null,
-  password:        null,
-  token:           null,
-  from:            getStartOfDay(),
-  to:              getEndOfDay(),
-  perPage:         100,
-  requestAllPages: false,
-  markdown:        true,
-  formatter:       '{checkbox} {avatar} <strong>{title}</strong>',
-  mergedTag:       '<strong>merged</strong>',
-  closedTag:       '<strong>closed</strong>',
-};
