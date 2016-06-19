@@ -1,6 +1,6 @@
 # GithubSummary
 
-[![wercker status](https://app.wercker.com/status/017b217a3bc138623299b2761965519d/s "wercker status")](https://app.wercker.com/project/bykey/017b217a3bc138623299b2761965519d)
+[![Build Status](https://travis-ci.org/zenoplex/github-summary.svg?branch=master)](https://travis-ci.org/zenoplex/github-summary)
 
 Node version of [github-nippou](https://github.com/masutaka/github-nippou) gem.
 
