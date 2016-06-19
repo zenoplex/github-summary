@@ -4,7 +4,6 @@ import groupBy from 'lodash.groupby';
 import axios from 'axios';
 import parseLinkHeader from 'parse-link-header';
 import toMarkdown from 'to-markdown';
-import { Buffer } from 'buffer/';
 import { getStartOfDay, getEndOfDay } from './utils/date';
 import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
