@@ -42,7 +42,7 @@ export default class GithubSummary {
     this.init();
   }
 
-  init() {
+  init(): void {
     const auth = this.getAuth();
 
     this.api = axios.create({
@@ -54,7 +54,7 @@ export default class GithubSummary {
     });
   }
 
-  getAuth() {
+  getAuth(): ?string {
     const { username, password, token } = this.options;
 
     if (token) return `token ${token}`;
@@ -65,11 +65,11 @@ export default class GithubSummary {
     return null;
   }
 
-  getEvents(page: number = 1) {
+  getEvents(page: number = 1): Promise {
     return this.api.get(`/users/${this.options.username}/events`, { params: { page } });
   }
 
-  requestEvents() {
+  requestEvents(): Promise {
     return this.getEvents()
       .then(response => {
         const { requestAllPages } = this.options;
@@ -91,27 +91,27 @@ export default class GithubSummary {
       ;
   }
 
-  formatRepo(repo: Repo) {
+  formatRepo(repo: Repo): string {
     const { name } = repo;
     return name;
   }
 
-  formatIssueTitle(payload: Payload) {
+  formatIssueTitle(payload: Payload): string {
     const { title, html_url } = payload;
     return `<a href="${html_url}">${title}</a>`;
   }
 
-  formatUser(user: User) {
+  formatUser(user: User): string {
     const { html_url, login } = user;
     return `<a href="${html_url}">${login}</a>`;
   }
 
-  formatUserAvatar(user: User) {
+  formatUserAvatar(user: User): string {
     const { avatar_url, login } = user;
     return `<img src="${avatar_url}&s=18" alt="${login}" />`;
   }
 
-  formatFlag(payload: Payload) {
+  formatFlag(payload: Payload): ?string {
     const { mergedTag, closedTag } = this.options;
     const { merged, state } = payload;
 
@@ -121,7 +121,7 @@ export default class GithubSummary {
     return '';
   }
 
-  formatCheckbox(payload: Payload) {
+  formatCheckbox(payload: Payload): string {
     const flag = this.formatFlag(payload);
     if (flag) return '<input type="checkbox" checked />';
     return '<input type="checkbox" />';
@@ -152,7 +152,7 @@ export default class GithubSummary {
     return '';
   }
 
-  formatEvent(event: Event) {
+  formatEvent(event: Event): ?string {
     switch (event.type) {
       case ISSUE_COMMENT_EVENT:
       case ISSUE_EVENT:
@@ -165,7 +165,7 @@ export default class GithubSummary {
     }
   }
 
-  getSummary(): ?string {
+  getSummary(): Promise<?string> {
     return this.requestEvents()
       .then(events => {
         const html = [];
