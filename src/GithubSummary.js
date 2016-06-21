@@ -1,3 +1,5 @@
+// @flow
+
 import drop from 'lodash.drop';
 import uniqBy from 'lodash.uniqby';
 import groupBy from 'lodash.groupby';
@@ -9,10 +11,12 @@ import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
   CLOSED,
 } from './constants';
+import type { DefaultOptions, Options } from './types/Options';
+import type { Repo, User, Payload, Event } from './types/Github';
 
 export default class GithubSummary {
 
-  static defaults = {
+  static defaults: DefaultOptions = {
     from: getStartOfDay(),
     to: getEndOfDay(),
     perPage: 100,
@@ -22,9 +26,16 @@ export default class GithubSummary {
     mergedTag: '<strong>merged</strong>',
     closedTag: '<strong>closed</strong>',
   };
-  
-  constructor(options) {
-    this.options = { ...GithubSummary.defaults, ...options };
+
+  static mergeOptions(a: any, b: any): Options {
+    return {...a, ...b};
+  }
+
+  api: axios;
+  options: Options;
+
+  constructor(options: Options) {
+    this.options = this.constructor.mergeOptions(GithubSummary.defaults, options);
 
     if (!options.username) throw new Error('options.username is required');
 
@@ -54,7 +65,7 @@ export default class GithubSummary {
     return null;
   }
 
-  getEvents(page = 1) {
+  getEvents(page: number = 1) {
     return this.api.get(`/users/${this.options.username}/events`, { params: { page } });
   }
 
@@ -66,6 +77,7 @@ export default class GithubSummary {
         let requests = [];
 
         if (requestAllPages && pagination) {
+          // $flow-disable: see https://github.com/facebook/flow/pull/1668
           requests = drop([...Array(Number(pagination.last.page)).keys()]).map(page => {
             let i = page;
             return this.getEvents(++i);
@@ -79,27 +91,27 @@ export default class GithubSummary {
       ;
   }
 
-  formatRepo(repo) {
+  formatRepo(repo: Repo) {
     const { name } = repo;
     return name;
   }
 
-  formatIssueTitle(payload) {
+  formatIssueTitle(payload: Payload) {
     const { title, html_url } = payload;
     return `<a href="${html_url}">${title}</a>`;
   }
 
-  formatUser(user) {
+  formatUser(user: User) {
     const { html_url, login } = user;
     return `<a href="${html_url}">${login}</a>`;
   }
 
-  formatUserAvatar(user) {
+  formatUserAvatar(user: User) {
     const { avatar_url, login } = user;
     return `<img src="${avatar_url}&s=18" alt="${login}" />`;
   }
 
-  formatFlag(payload) {
+  formatFlag(payload: Payload) {
     const { mergedTag, closedTag } = this.options;
     const { merged, state } = payload;
 
@@ -109,13 +121,13 @@ export default class GithubSummary {
     return '';
   }
 
-  formatCheckbox(payload) {
+  formatCheckbox(payload: Payload) {
     const flag = this.formatFlag(payload);
     if (flag) return '<input type="checkbox" checked />';
     return '<input type="checkbox" />';
   }
 
-  format(repo, payload) {
+  format(repo: Repo, payload: Payload) {
     const { options } = this;
     const { user } = payload;
     const regExp = /{(username|repo|title|checkbox|flag|avatar)}/g;
@@ -128,15 +140,17 @@ export default class GithubSummary {
       '{avatar}':   this.formatUserAvatar(user),
     };
 
-    return options.formatter.replace(regExp, (match) => {
-      if (match in templates) {
-        return templates[match];
-      }
-      return null;
-    }).trim();
+    if (options.formatter) {
+      return options.formatter.replace(regExp, (match) => {
+        if (match in templates) {
+          return templates[match];
+        }
+        return '';
+      }).trim();
+    }
   }
 
-  formatEvent(event) {
+  formatEvent(event: Event) {
     switch (event.type) {
       case ISSUE_COMMENT_EVENT:
       case ISSUE_EVENT:
