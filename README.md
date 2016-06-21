@@ -59,10 +59,10 @@ var summary = new GithubSummary({
   password:        'some_login_password',
   token:           'some_access_token',
 
-  // set starting date. Defaults to yesturday (`date.setDate(-1)`)
+  // set starting date. Defaults to beginning of today
   from:            '2015/12/12',
 
-  // set end date. Defaults to today
+  // set end date. Defaults to end of today
   to:              '2015/12/24',
 
   // number of events to retrieve per request to github. Default maxed to `100`
