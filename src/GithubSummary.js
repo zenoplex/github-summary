@@ -28,7 +28,7 @@ export default class GithubSummary {
   };
 
   static mergeOptions(a: any, b: any): Options {
-    return {...a, ...b};
+    return { ...a, ...b };
   }
 
   api: axios;
@@ -127,7 +127,7 @@ export default class GithubSummary {
     return '<input type="checkbox" />';
   }
 
-  format(repo: Repo, payload: Payload) {
+  format(repo: Repo, payload: Payload): string {
     const { options } = this;
     const { user } = payload;
     const regExp = /{(username|repo|title|checkbox|flag|avatar)}/g;
@@ -148,6 +148,8 @@ export default class GithubSummary {
         return '';
       }).trim();
     }
+
+    return '';
   }
 
   formatEvent(event: Event) {
@@ -163,7 +165,7 @@ export default class GithubSummary {
     }
   }
 
-  getSummary() {
+  getSummary(): ?string {
     return this.requestEvents()
       .then(events => {
         const html = [];
@@ -195,8 +197,12 @@ export default class GithubSummary {
           html.push(`${heading}<ul>${formatted}</ul>`);
         });
 
-        const output = html.join('');
-        return markdown ? toMarkdown(output, { gfm: true }) : output;
+        if (html.length > 0) {
+          const output = html.join('');
+          return markdown ? toMarkdown(output, { gfm: true }) : output;
+        }
+
+        return null;
       });
   }
 }
