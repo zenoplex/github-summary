@@ -12,7 +12,7 @@ describe('GithubSummary', () => {
   it('should return default options', () => {
     const {
       options: {
-        username, password, token, from, to, perPage, requestAllPages, markdown, formatter,
+        username, from, to, perPage, requestAllPages, markdown, formatter,
         mergedTag, closedTag,
       },
     } = summary;
@@ -23,8 +23,6 @@ describe('GithubSummary', () => {
     end.setHours(23, 59, 59, 999);
 
     assert(username === 'zenoplex');
-    assert(password === null);
-    assert(token === null);
     assert.deepEqual(from, start);
     assert.deepEqual(to, end);
     assert(perPage === 100);

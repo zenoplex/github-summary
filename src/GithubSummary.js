@@ -1,3 +1,5 @@
+// @flow
+
 import drop from 'lodash.drop';
 import uniqBy from 'lodash.uniqby';
 import groupBy from 'lodash.groupby';
@@ -9,17 +11,38 @@ import {
   ISSUE_EVENT, ISSUE_COMMENT_EVENT, PULL_REQUEST_EVENT, PULL_REQUEST_REVIEW_COMMENT_EVENT,
   CLOSED,
 } from './constants';
+import type { DefaultOptions, Options } from './types/Options';
+import type { Repo, User, Payload, Event } from './types/Github';
 
 export default class GithubSummary {
-  constructor(options) {
-    this.options = { ...GithubSummary.defaults, ...options };
+
+  static defaults: DefaultOptions = {
+    from: getStartOfDay(),
+    to: getEndOfDay(),
+    perPage: 100,
+    requestAllPages: false,
+    markdown: true,
+    formatter: '{checkbox} {avatar} <strong>{title}</strong>',
+    mergedTag: '<strong>merged</strong>',
+    closedTag: '<strong>closed</strong>',
+  };
+
+  static mergeOptions(a: any, b: any): Options {
+    return { ...a, ...b };
+  }
+
+  api: axios;
+  options: Options;
+
+  constructor(options: Options) {
+    this.options = this.constructor.mergeOptions(GithubSummary.defaults, options);
 
     if (!options.username) throw new Error('options.username is required');
 
     this.init();
   }
 
-  init() {
+  init(): void {
     const auth = this.getAuth();
 
     this.api = axios.create({
@@ -31,7 +54,7 @@ export default class GithubSummary {
     });
   }
 
-  getAuth() {
+  getAuth(): ?string {
     const { username, password, token } = this.options;
 
     if (token) return `token ${token}`;
@@ -42,11 +65,11 @@ export default class GithubSummary {
     return null;
   }
 
-  getEvents(page = 1) {
+  getEvents(page: number = 1): Promise {
     return this.api.get(`/users/${this.options.username}/events`, { params: { page } });
   }
 
-  requestEvents() {
+  requestEvents(): Promise {
     return this.getEvents()
       .then(response => {
         const { requestAllPages } = this.options;
@@ -54,6 +77,7 @@ export default class GithubSummary {
         let requests = [];
 
         if (requestAllPages && pagination) {
+          // $flow-disable: see https://github.com/facebook/flow/pull/1668
           requests = drop([...Array(Number(pagination.last.page)).keys()]).map(page => {
             let i = page;
             return this.getEvents(++i);
@@ -67,27 +91,27 @@ export default class GithubSummary {
       ;
   }
 
-  formatRepo(repo) {
+  formatRepo(repo: Repo): string {
     const { name } = repo;
     return name;
   }
 
-  formatIssueTitle(payload) {
+  formatIssueTitle(payload: Payload): string {
     const { title, html_url } = payload;
     return `<a href="${html_url}">${title}</a>`;
   }
 
-  formatUser(user) {
+  formatUser(user: User): string {
     const { html_url, login } = user;
     return `<a href="${html_url}">${login}</a>`;
   }
 
-  formatUserAvatar(user) {
+  formatUserAvatar(user: User): string {
     const { avatar_url, login } = user;
     return `<img src="${avatar_url}&s=18" alt="${login}" />`;
   }
 
-  formatFlag(payload) {
+  formatFlag(payload: Payload): ?string {
     const { mergedTag, closedTag } = this.options;
     const { merged, state } = payload;
 
@@ -97,13 +121,13 @@ export default class GithubSummary {
     return '';
   }
 
-  formatCheckbox(payload) {
+  formatCheckbox(payload: Payload): string {
     const flag = this.formatFlag(payload);
     if (flag) return '<input type="checkbox" checked />';
     return '<input type="checkbox" />';
   }
 
-  format(repo, payload) {
+  format(repo: Repo, payload: Payload): string {
     const { options } = this;
     const { user } = payload;
     const regExp = /{(username|repo|title|checkbox|flag|avatar)}/g;
@@ -116,15 +140,19 @@ export default class GithubSummary {
       '{avatar}':   this.formatUserAvatar(user),
     };
 
-    return options.formatter.replace(regExp, (match) => {
-      if (match in templates) {
-        return templates[match];
-      }
-      return null;
-    }).trim();
+    if (options.formatter) {
+      return options.formatter.replace(regExp, (match) => {
+        if (match in templates) {
+          return templates[match];
+        }
+        return '';
+      }).trim();
+    }
+
+    return '';
   }
 
-  formatEvent(event) {
+  formatEvent(event: Event): ?string {
     switch (event.type) {
       case ISSUE_COMMENT_EVENT:
       case ISSUE_EVENT:
@@ -137,7 +165,7 @@ export default class GithubSummary {
     }
   }
 
-  getSummary() {
+  getSummary(): Promise<?string> {
     return this.requestEvents()
       .then(events => {
         const html = [];
@@ -169,22 +197,12 @@ export default class GithubSummary {
           html.push(`${heading}<ul>${formatted}</ul>`);
         });
 
-        const output = html.join('');
-        return markdown ? toMarkdown(output, { gfm: true }) : output;
+        if (html.length > 0) {
+          const output = html.join('');
+          return markdown ? toMarkdown(output, { gfm: true }) : output;
+        }
+
+        return null;
       });
   }
 }
-
-GithubSummary.defaults = {
-  username:        null,
-  password:        null,
-  token:           null,
-  from:            getStartOfDay(),
-  to:              getEndOfDay(),
-  perPage:         100,
-  requestAllPages: false,
-  markdown:        true,
-  formatter:       '{checkbox} {avatar} <strong>{title}</strong>',
-  mergedTag:       '<strong>merged</strong>',
-  closedTag:       '<strong>closed</strong>',
-};
