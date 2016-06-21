@@ -1,4 +1,8 @@
-function getDateObject(day) {
+// @flow
+
+import type { DateFormat } from 'types/DateFormat';
+
+function getDateObject(day: DateFormat): Date {
   let date;
 
   if (day instanceof Date) {
@@ -11,13 +15,13 @@ function getDateObject(day) {
   return date;
 }
 
-export function getStartOfDay(day) {
+export function getStartOfDay(day: DateFormat = new Date()): Date {
   const date = getDateObject(day);
   date.setHours(0, 0, 0, 0);
   return date;
 }
 
-export function getEndOfDay(day = new Date()) {
+export function getEndOfDay(day: DateFormat = new Date()): Date {
   const date = getDateObject(day);
   date.setHours(23, 59, 59, 999);
   return date;
