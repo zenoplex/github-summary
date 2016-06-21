@@ -21,7 +21,8 @@
     "start": "node server/index.js",
     "lint": "eslint .",
     "mocha": "NODE_ENV=test mocha --compilers js:babel-register --recursive 'test/**/*_spec.js'",
-    "test": "npm run lint && npm run mocha",
+    "typecheck": "flow",
+    "test": "npm run typecheck && npm run lint && npm run mocha",
     "test:watch": "npm run mocha -- -w",
     "prepublish": "npm run clean && npm run build"
   },
