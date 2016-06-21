@@ -13,5 +13,8 @@ module.exports = {
     'camelcase':   0,
     'flow-vars/define-flow-type': 1,
     'flow-vars/use-flow-type': 1,
+  },
+  settings: {
+    'import/resolver': 'webpack',
   }
 };
