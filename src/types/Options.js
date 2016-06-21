@@ -1,10 +1,10 @@
 // @flow
 
-type SupportedDateFormat = string | Date | number;
+import type { DateFormat } from 'types/DateFormat';
 
 export interface DefaultOptions {
-  from?: SupportedDateFormat,
-  to?: SupportedDateFormat,
+  from?: DateFormat,
+  to?: DateFormat,
   perPage?: number,
   requestAllPages?: boolean,
   markdown?: boolean,
